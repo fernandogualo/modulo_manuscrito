@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+		<record id="action_manuscrito" model="ir.actions.act_window">
+			<field name="name">Manuscrito</field>
+			<field name="type">ir.actions.act_window</field>
+			<field name="res_model">res.manuscrito</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">kanban,tree,form</field>
+		</record>
+		<record id="view_partner_form_author_inh" model="ir.ui.view">
+			<field name="name">res.partner.form.author.inh</field>
+			<field name="model">res.partner</field>
+			<field name="type">form</field>
+			<field name="inherit_id" ref="base.view_partner_form"/>
+			<field name="arch" type="xml">
+				<field name="customer" position="before">
+					<field name="author"/>
+				</field>
+			</field>	
+		</record>
+		<menuitem name="Manuscrito" id="menu_manuscrito_principal"/>
+        <menuitem name="Menu manuscritos" id="menu_manuscrito" parent="menu_manuscrito_principal"/>
+        <menuitem name="Gestión de manuscritos" id="menu_lista" parent="menu_manuscrito" action="action_manuscrito"/>
+        <record model="ir.ui.view" id="view_manus_tree">
+            <field name="name">res.manus.tree</field>
+            <field name="model">res.manuscrito</field>
+            <field name="arch" type="xml">
+                <tree string="Manuscrito" version="7.0">
+                    <field name="autor"/>
+                    <field name="titulo"/>
+                    <field name="isbn"/>
+                    <field name="genero"/>
+					<field name="state"/>
+                </tree>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="view_manus_form">
+            <field name="name">res.manus.form</field>
+            <field name="model">res.manuscrito</field>
+            <field name="arch" type="xml">
+                <form string="Manuscrito" version="7.0">
+					<header>
+						<button name="set_recibo" string="Enviar acuse recibo" type="object" states="recibo" class="oe_highlight"/>
+						<button name="set_aceptar" string="Aceptar obra" type="object" states="confirmacion" class="oe_highlight"/>
+						<button name="%(action_manuscrito)d" string="Rechazar obra" type="action" states="confirmacion" />
+						<button name="set_evaluar" string="Evaluación" type="object" states="eval" class="oe_highlight"/>
+						<button name="set_firmar" string="Firmar contrato" type="object" states="firma" class="oe_highlight"/>
+						<button name="set_corregir" string="Enviar a correctora" type="object" states="corregir" class="oe_highlight"/>
+						<button name="set_visto" string="Enviar a autor" type="object" states="reenvio" class="oe_highlight"/>
+						<button name="set_imprenta" string="Enviado a imprenta" type="object" states="envio imprenta" class="oe_highlight"/>
+						<field name="state"  statusbar_visible="recibo,eval,confirmacion,firma,correccion,done" statusbar_colors='{"recibo":"blue"}' widget="statusbar"/>
+					</header>
+					<sheet>
+						<field name="image" widget="image" class="oe_avatar oe_left"/>
+						<div class="oe_title">
+							<h1>
+								<label string="Autor"/>
+							</h1>
+							<h1>
+								<field name="autor" default_focus="1" placeholder="Nombre del autor" attrs="{'required': [('autor', '!=', False)]}"/>
+							</h1>
+							<h2>
+								<label string="Manuscrito"/>
+							</h2>
+							<group>
+								<field name="titulo" placeholder="Escriba el título aquí"/>
+								<field name="isbn" placeholder="p.ej 123-4-56-78941011-1"/>
+								<field name="genero"/>
+							</group>
+						</div>
+						<notebook>
+							<page string="Descripción">
+								<sparator string="Links" colspan="4" />
+								<field name="comment" placeholder="Escriba aquí..."/>
+							</page>
+							<page string="Información adicional">
+								<group>
+									<field name="idioma" string="Idioma"/>
+									<field name="date" string="Fecha realización"/>
+								</group>
+							</page>
+						</notebook>
+					</sheet>
+                </form>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="manus_module_kanban_view">
+            <field name="name">manus.module.kanban</field>
+            <field name="model">res.manuscrito</field>
+            <field name="type">kanban</field>
+            <field name="arch" type="xml">
+                <kanban>
+                    <!--list of field to be loaded -->
+                    <field name="autor" />
+                    <field name="image" />
+                    <templates>
+                    <t t-name="kanban-box">
+                            <div class="oe_product_vignette">
+                                <a type="open">
+                                    <img class="oe_kanban_image"
+                                        t-att-src="kanban_image('res.manuscrito','image', record.id.value)" />
+                                </a>
+                                <div class="oe_product_desc">
+                                    <h4>
+                                        <a type="edit">
+                                            <field name="autor"></field>
+                                        </a>
+                                    </h4>
+                                    <ul>
+                                        <li>Titulo : <field name="titulo"></field> </li>
+                                        <li>ISBN : <field name="isbn"></field> </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+	</data>
+</openerp>
+
